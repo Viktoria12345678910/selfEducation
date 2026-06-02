@@ -1,0 +1,407 @@
+@import './index.css';
+
+/* =========================
+   GLOBAL
+========================= */
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+
+  color: #2c2416;
+
+  background-color: #f5f0e8;
+  background-image:
+    radial-gradient(
+      ellipse at 20% 50%,
+      rgba(210, 190, 150, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 20%,
+      rgba(180, 160, 120, 0.2) 0%,
+      transparent 50%
+    );
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1rem 2rem;
+
+  background: rgba(255, 252, 242, 0.95);
+
+  box-shadow: 0 2px 8px rgba(100, 80, 40, 0.1);
+}
+
+.logo {
+  margin-right: 2rem;
+
+  font-size: 1.3rem;
+  font-weight: 700;
+
+  color: #8b6914;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-links a {
+  padding: 0.4rem 0.8rem;
+
+  border-radius: 3px;
+
+  color: #3d2b0e;
+  text-decoration: none;
+  font-weight: 500;
+
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: rgba(139, 105, 20, 0.12);
+  color: #8b6914;
+}
+
+.user-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.username {
+  font-size: 0.85rem;
+  color: #7a6040;
+}
+
+.nav-links button {
+  padding: 0.4rem 0.9rem;
+
+  border: 1px solid #c9b48a;
+  border-radius: 3px;
+
+  background: transparent;
+
+  color: #3d2b0e;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+}
+
+.nav-links button:hover {
+  border-color: #8b2500;
+  color: #8b2500;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-wrapper {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem;
+}
+
+.auth-box {
+  position: relative;
+
+  width: 100%;
+  max-width: 420px;
+
+  padding: 2.5rem 3rem;
+
+  border: 1px solid rgba(180, 155, 100, 0.3);
+  border-radius: 4px;
+
+  background: rgba(255, 252, 242, 0.92);
+
+  box-shadow:
+    0 2px 8px rgba(100, 80, 40, 0.15),
+    inset 0 0 60px rgba(210, 190, 150, 0.1);
+}
+
+.auth-box::before {
+  content: '';
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 3px;
+
+  border-radius: 4px 4px 0 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #c4a35a,
+      #8b6914,
+      #c4a35a
+    );
+}
+
+.auth-box h2 {
+  margin-bottom: 1.75rem;
+
+  text-align: center;
+
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  color: #3d2b0e;
+}
+
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.auth-box input {
+  padding: 0.75rem 1rem;
+
+  border: 1px solid #c9b48a;
+  border-radius: 3px;
+
+  outline: none;
+
+  background: rgba(255, 253, 245, 0.8);
+
+  color: #2c2416;
+  font-size: 0.95rem;
+
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.auth-box input:focus {
+  border-color: #8b6914;
+  box-shadow: 0 0 0 3px rgba(139, 105, 20, 0.12);
+}
+
+.auth-box input::placeholder {
+  color: #b09a6e;
+}
+
+.auth-box p {
+  margin-top: 1.25rem;
+
+  text-align: center;
+
+  font-size: 0.9rem;
+  color: #7a6040;
+}
+
+.auth-box a {
+  color: #8b6914;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-box a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-primary {
+  padding: 0.7rem 1.25rem;
+
+  border: none;
+  border-radius: 3px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #8b6914,
+      #c4a35a
+    );
+
+  color: #fff8e8;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  padding: 0.7rem 1.25rem;
+
+  border: 1px solid #c9b48a;
+  border-radius: 3px;
+
+  background: rgba(255, 252, 242, 0.9);
+
+  color: #3d2b0e;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: rgba(210, 190, 150, 0.2);
+  border-color: #8b6914;
+}
+
+.btn-danger {
+  padding: 0.5rem 1rem;
+
+  border: 1px solid #c0392b;
+  border-radius: 3px;
+
+  background: transparent;
+
+  color: #8b2500;
+
+  cursor: pointer;
+
+  transition: all 0.2s;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+  color: white;
+}
+
+/* =========================
+   NOTES
+========================= */
+
+.notes-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  padding: 2rem;
+}
+
+.notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(260px, 1fr));
+
+  gap: 20px;
+}
+
+.note-card {
+  padding: 1.25rem 1.5rem;
+
+  border-left: 4px solid #8b6914;
+  border-radius: 12px;
+
+  background: rgba(255, 252, 242, 0.92);
+
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+.note-card h3 {
+  margin-bottom: 0.75rem;
+
+  color: #3d2b0e;
+}
+
+.note-card p {
+  line-height: 1.5;
+  color: #4a3d29;
+}
+
+/* =========================
+   NOTE FORM
+========================= */
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  padding: 20px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 252, 242, 0.92);
+
+  box-shadow:
+    0 2px 8px rgba(100, 80, 40, 0.1);
+}
+
+.note-form input,
+.note-form textarea,
+.note-form select {
+  padding: 12px;
+
+  border: 1px solid #c9b48a;
+  border-radius: 8px;
+
+  background: rgba(255, 253, 245, 0.8);
+
+  color: #2c2416;
+}
+
+.note-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* =========================
+   ERRORS
+========================= */
+
+.error {
+  margin-bottom: 0.5rem;
+
+  padding: 0.65rem 1rem;
+
+  border-left: 3px solid #c0392b;
+  border-radius: 3px;
+
+  background: #fdf0ee;
+
+  color: #8b2500;
+
+  font-size: 0.88rem;
+}

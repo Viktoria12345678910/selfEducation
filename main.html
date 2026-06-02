@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+	<title>main</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	 <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active"
+                    id="home-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#profile"
+                    type="button"
+                    role="tab">
+                Профіль
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="profile-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#courses"
+                    type="button"
+                    role="tab">
+                Курси
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link"
+                    id="contact-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#notes"
+                    type="button"
+                    role="tab">
+                Нотатки/читання
+            </button>
+        </li>
+    </ul>
+
+    <!-- Вміст вкладок -->
+    <div class="tab-content border border-top-0 p-4" id="myTabContent">
+
+        <div class="tab-pane fade show active position-relative position-absolute top-50 start-50 translate-middle mt-1 bi bi-caret-down-fill" id="profile" role="tabpanel">
+            <h4>Профіль</h4>
+            <p>
+	    	Тут відображатиметься ваш профіль коли ви увійдете
+		<br>
+		<button type = "button" class = "btn btn-primary position-relative position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill">Увійти</button>
+            </p>
+        </div>
+
+        <div class="tab-pane fade" id="courses" role="tabpanel">
+            <h4>Курси</h4>
+            <p>
+                тут відображатимуться курси які ви проходите коли ви їх додасте
+            </p>
+            <button class="btn btn-primary">додати курс</button>
+        </div>
+
+        <div class="tab-pane fade" id="notes" role="tabpanel">
+            <h4>Нотатки/читання </h4>
+            <p>
+                тут відображатимуться нотатки які ви додасте
+		<br>
+		<button class="btn btn-primary">додати нотатку</button>
+            </p>
+            
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
