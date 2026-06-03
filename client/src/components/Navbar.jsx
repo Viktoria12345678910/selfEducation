@@ -6,7 +6,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <span className="logo">SelfEducation</span>
+      <span className="logo"><img src="/logo.png" alt="logo" />SelfEducation</span>
       <div className="nav-links">
         <NavLink to="/courses">Курси</NavLink>
 	  {user && (
