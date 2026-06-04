@@ -16,7 +16,7 @@ export default function CoursePage() {
 
   const fetchCourse = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/courses/${id}`);
+      const res = await fetch(`${API_URL}/api/courses/${id}`);
       if (!res.ok) return navigate('/courses');
       setCourse(await res.json());
     } catch {
@@ -26,7 +26,7 @@ export default function CoursePage() {
 
   const fetchNotes = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/notes/${id}`);
+      const res = await fetch(`${API_URL}/api/notes/${id}`);
       setNotes(await res.json());
     } catch {
       setError('Помилка завантаження нотаток');

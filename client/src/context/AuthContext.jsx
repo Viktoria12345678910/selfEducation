@@ -14,7 +14,7 @@ useEffect(() => {
     return;
   }
 
-  fetch('http://localhost:5000/api/auth/me', {
+  fetch(`${API_URL}/api/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -49,7 +49,7 @@ useEffect(() => {
 
   // Хелпер для fetch з токеном (використовується в усіх сторінках)
   const authFetch = async (url, options = {}) => {
-    const res = await fetch(`http://localhost:5000${url}`, {
+    const res = await fetch(`${API_URL}${url}`, {
       ...options,
       headers: {
         'Content-Type': 'application/json',

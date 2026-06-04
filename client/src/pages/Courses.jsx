@@ -19,11 +19,12 @@ export default function Courses() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const fetchCourses = async (p = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/courses?page=${p}&limit=6`);
+      const res = await fetch(`${API_URL}/api/courses?page=${p}&limit=6`);
       const data = await res.json();
       setCourses(data.data);
       setTotal(data.total);
@@ -68,7 +69,7 @@ export default function Courses() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Мої курси <span style={{ color: '#aaa', fontSize: '1rem' }}>({total})</span></h1>
+        <h1>Kурси <span style={{ color: '#aaa', fontSize: '1rem' }}>({total})</span></h1>
 	  {user && (
         <button className="btn-primary" onClick={() => setShowForm(!showForm)}>
           {showForm ? 'Скасувати' : '+ Додати курс'}
@@ -120,11 +121,19 @@ export default function Courses() {
         <p style={{ marginTop: '2rem', color: '#aaa' }}>Ще немає курсів. Додай перший!</p>
       ) : (
         <div className="cards-grid">
-          {courses.map(course => (
-            <div key={course._id} className="card"
-              onClick={() => navigate(`/courses/${course._id}`)}>
-              <h3>{course.courseName}</h3>
-
+	{courses.map(course => (
+  	<div
+    		key={course._id}
+    		className="course-card"
+    		onClick={() => {
+      			if (user) {
+        	navigate(`/courses/${course._id}`);
+      		} else {
+        		setShowAuthModal(true);
+      		}
+    		}}
+  	>
+    <h3>{course.courseName}</h3>
               <div className="card-meta">
                 {course.completed
                   ? <span className="badge badge-green">✅ Завершено</span>
@@ -169,17 +178,59 @@ export default function Courses() {
         </div>
       )}
 
+	  {showAuthModal && (
+  <div
+    className="modal-overlay"
+    onClick={() => setShowAuthModal(false)}
+  >
+    <div
+      className="auth-modal"
+      onClick={e => e.stopPropagation()}
+    >
+      <h2>Потрібна авторизація</h2>
+
+      <p>
+        Щоб переглядати деталі курсу,
+        увійдіть або створіть акаунт.
+      </p>
+
+      <div className="modal-actions">
+        <button
+          className="btn-primary"
+          onClick={() => navigate('/login')}
+        >
+          Увійти
+        </button>
+
+        <button
+          className="btn-secondary"
+          onClick={() => navigate('/register')}
+        >
+          Реєстрація
+        </button>
+      </div>
+
+      <button
+        className="modal-close"
+        onClick={() => setShowAuthModal(false)}
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+)}
+
       {/* ПАГІНАЦІЯ */}
       {pages > 1 && (
         <div className="pagination">
-          <button onClick={() => setPage(p => p - 1)} disabled={page === 1}>←</button>
+          <button className="btn-secondary" onClick={() => setPage(p => p - 1)} disabled={page === 1}>←</button>
           {Array.from({ length: pages }, (_, i) => (
-            <button key={i + 1} className={page === i + 1 ? 'active' : ''}
+            <button key={i + 1} className={`btn-secondary ${page === i + 1 ? 'active' : ''}`}
               onClick={() => setPage(i + 1)}>
               {i + 1}
             </button>
           ))}
-          <button onClick={() => setPage(p => p + 1)} disabled={page === pages}>→</button>
+          <button className="btn-secondary" onClick={() => setPage(p => p + 1)} disabled={page === pages}>→</button>
         </div>
       )}
     </div>
