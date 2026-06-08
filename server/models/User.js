@@ -8,7 +8,23 @@ const userSchema = new mongoose.Schema({
   ava:      { type: String, default: '' },
   bio:      { type: String, default: '' },
   isActive: { type: Boolean, default: true },
-  regDate:  { type: Date, default: Date.now }
+  regDate:  { type: Date, default: Date.now },
+  completedCourses: {
+		type: mongoose.Schema.Types.ObjectId,
+  		ref: 'Course'
+  },
+  courseProgress: [
+	  {
+		  course: {
+			  type: mongoose.Schema.Types.ObjectId,
+		  	  ref: 'Course'
+		  },
+		  completedModules: {
+		  	type: Number,
+		  	default: 0
+		  }
+  	}
+  ]
 });
 
 module.exports = mongoose.model('User', userSchema);

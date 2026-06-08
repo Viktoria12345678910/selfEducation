@@ -6,7 +6,7 @@ import { API_URL } from '../config';
 
 export default function CoursePage() {
   const { id } = useParams();
-  const { authFetch, user } = useAuth();
+  const { authFetch, user, refreshUser } = useAuth();
   const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
@@ -18,7 +18,7 @@ export default function CoursePage() {
 
   const fetchCourse = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/courses/${id}`);
+      const res = await fetch(`/api/courses/${id}`);
       if (!res.ok) return navigate('/courses');
       setCourse(await res.json());
     } catch {
@@ -28,7 +28,7 @@ export default function CoursePage() {
 
   const fetchNotes = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/notes/${id}`);
+      const res = await authFetch(`${API_URL}/api/notes/${id}`);
       setNotes(await res.json());
     } catch {
       setError('Помилка завантаження нотаток');
@@ -59,28 +59,34 @@ export default function CoursePage() {
       setShowForm(false);
       fetchNotes();
     }
+    refreshUser();
   };
 
   const handleDelete = async (noteId) => {
     if (!window.confirm('Видалити нотатку?')) return;
     await authFetch(`/api/notes/${noteId}`, { method: 'DELETE' });
     fetchNotes();
+    refreshUser();
   };
 
-  const handleToggleComplete = async () => {
-    await authFetch(`/api/courses/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ completed: !course.completed })
-    });
-    fetchCourse();
-  };
+const handleToggleComplete = async () => {
+  await authFetch(`/api/courses/${id}/complete`, {
+    method: 'POST'
+  });
+  refreshUser();
+};
 
   if (loading) return <p className="loading">Завантаження...</p>;
   if (!course) return null;
+  const isCompleted = user?.completedCourses?.includes(course._id);
 
-  const progress = course.modules > 0
-    ? Math.round((course.modulesdone / course.modules) * 100)
-    : 0;
+  const progressData = user?.courseProgress?.find(
+  	p => p.course.toString() === course._id
+  );
+
+  const completedModules = progressData?.completedModules || 0;
+
+  const progress = course.modules > 0 ? Math.round((completedModules / course.modules)*100) : 0;
 
   return (
     <div>
@@ -103,9 +109,9 @@ export default function CoursePage() {
           </div>
 	  {user &&(
           <button
-            className={course.completed ? 'btn-secondary' : 'btn-primary'}
+            className={isCompleted ? 'btn-secondary' : 'btn-primary'}
             onClick={handleToggleComplete}>
-            {course.completed ? '↩ Позначити як незавершений' : '✅ Позначити як завершений'}
+            {isCompleted ? '↩ Позначити як незавершений' : '✅ Позначити як завершений'}
           </button>
 	  )}
         </div>
@@ -115,9 +121,24 @@ export default function CoursePage() {
 {user && (
       <div className="form-panel" style={{ marginBottom: '2rem' }}>
         <div className="card-meta" style={{ marginBottom: '0.75rem' }}>
-          {course.completed
-            ? <span className="badge badge-green">✅ Завершено</span>
-            : <span className="badge badge-yellow">⏳ В процесі</span>}
+            {isCompleted ? (
+              <span className="badge badge-green">
+                ✅ Завершено
+              </span>
+
+            ) : completedModules > 0 ? (
+
+              <span className="badge badge-yellow">
+                ⏳ В процесі
+              </span>
+
+            ) : (
+
+              <span className="badge badge-gray">
+                📚 Не розпочато
+              </span>
+
+            )}
           {course.certificate &&
             <span className="badge badge-blue">🎓 Сертифікат</span>}
           {course.price === 0
@@ -128,7 +149,7 @@ export default function CoursePage() {
         {course.modules > 0 && (
           <>
             <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-              Прогрес: {course.modulesdone}/{course.modules} модулів ({progress}%)
+              Прогрес: {completedModules}/{course.modules} модулів ({progress}%)
             </p>
             <div className="progress-bar">
               <div className="progress-fill" style={{ width: `${progress}%` }} />

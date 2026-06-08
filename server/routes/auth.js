@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
     const user = await User.create({ username, email, password: hashed, displayName });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, username, email, displayName } });
+    res.json({ token, user: { id: user._id, username, email, displayName,completedCourses: user.completedCourses, courseProgress: user.courseProgress} });
 
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
     if (!match) return res.status(400).json({ message: 'Невірний пароль' });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, username: user.username, email, displayName: user.displayName } });
+    res.json({ token, user: { id: user._id, username: user.username, email, displayName: user.displayName, completedCourses: user.completedCourses, courseProgress: user.courseProgress } });
 
   } catch (err) {
     res.status(500).json({ message: err.message });

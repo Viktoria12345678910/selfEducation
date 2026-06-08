@@ -12,8 +12,8 @@ export default function Notes() {
 
   const [form, setForm] = useState({
     title: '',
-    content: '',
-    courseId: ''
+    text: '',
+    courseId: null
   });
 
   useEffect(() => {
@@ -53,10 +53,11 @@ export default function Notes() {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    const payload = {...form, courseId: form.courseId || null};
     try {
       const res = await authFetch('/api/notes', {
         method: 'POST',
-        body: JSON.stringify(form)
+        body: JSON.stringify(payload)
       });
 
       const newNote = await res.json();
@@ -65,8 +66,8 @@ export default function Notes() {
 
       setForm({
         title: '',
-        content: '',
-        courseId: ''
+        text: '',
+        courseId: null
       });
 
       setShowForm(false);
@@ -97,9 +98,9 @@ export default function Notes() {
           />
 
           <textarea
-            name="content"
+            name="text"
             placeholder="Текст нотатки"
-            value={form.content}
+            value={form.text}
             onChange={handleChange}
             required
           />
@@ -113,7 +114,7 @@ export default function Notes() {
 
             {courses.map(course => (
               <option key={course._id} value={course._id}>
-                {course.title}
+                {course.courseName}
               </option>
             ))}
           </select>
@@ -139,7 +140,8 @@ export default function Notes() {
           <div key={note._id} className="note-card">
             <h3>{note.title}</h3>
 
-            <p>{note.content}</p>
+            <p>{note.text}</p>
+	    <p>{note.tags}</p>
           </div>
         ))}
       </div>

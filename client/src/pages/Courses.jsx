@@ -4,8 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 
 const EMPTY_FORM = {
-  courseName: '', siteUrl: '', completed: false,
-  certificate: false, modules: '', modulesdone: '', price: ''
+  courseName: '', siteUrl: '',
+  certificate: false, modules: '', price: ''
 };
 
 export default function Courses() {
@@ -20,6 +20,7 @@ export default function Courses() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+// eslint-disable-next-line
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const fetchCourses = async (p = 1) => {
@@ -89,16 +90,11 @@ export default function Courses() {
             			</div>
             			<div className="form-row">
               				<input name="modules" type="number" placeholder="Кількість модулів" value={form.modules} onChange={handleChange} min="0" />
-              				<input name="modulesdone" type="number" placeholder="Пройдено модулів" value={form.modulesdone} onChange={handleChange} min="0" />
             			</div>
             			<div className="form-row">
               				<input name="price" type="number" placeholder="Ціна (0 = безкоштовно)" value={form.price} onChange={handleChange} min="0" />
             			</div>
             			<div style={{ display: 'flex', gap: '1.5rem', margin: '0.5rem 0' }}>
-              				<label>
-                				<input type="checkbox" name="completed" checked={form.completed} onChange={handleChange} />
-                				{' '}Завершено
-              				</label>
               				<label>
                 				<input type="checkbox" name="certificate" checked={form.certificate} onChange={handleChange} />
                 				{' '}Є сертифікат
@@ -114,110 +110,153 @@ export default function Courses() {
       	)}
 	
 
-      {/* СПИСОК КУРСІВ */}
-      {error && <p className="error">{error}</p>}
-      {loading ? (
-        <p style={{ marginTop: '2rem', color: '#aaa' }}>Завантаження...</p>
-      ) : courses.length === 0 ? (
-        <p style={{ marginTop: '2rem', color: '#aaa' }}>Ще немає курсів. Додай перший!</p>
-      ) : (
-        <div className="cards-grid">
-	{courses.map(course => (
-  	<div
-    		key={course._id}
-    		className="course-card"
-    		onClick={() => {
-      			if (user) {
-        	navigate(`/courses/${course._id}`);
-      		} else {
-        		setShowAuthModal(true);
-      		}
-    		}}
-  	>
-    <h3>{course.courseName}</h3>
-              <div className="card-meta">
-                {course.completed
-                  ? <span className="badge badge-green">✅ Завершено</span>
-                  : <span className="badge badge-yellow">⏳ В процесі</span>}
-                {course.certificate &&
-                  <span className="badge badge-blue">🎓 Сертифікат</span>}
-                {course.price === 0
-                  ? <span className="badge badge-gray">Безкоштовно</span>
-                  : <span className="badge badge-gray">💰 {course.price} грн</span>}
+{/* СПИСОК КУРСІВ */}
+{error && <p className="error">{error}</p>}
+
+{loading ? (
+  <p style={{ marginTop: '2rem', color: '#aaa' }}>
+    Завантаження...
+  </p>
+) : courses.length === 0 ? (
+  <p style={{ marginTop: '2rem', color: '#aaa' }}>
+    Ще немає курсів. Додай перший!
+  </p>
+) : (
+  <div className="cards-grid">
+    {courses.map(course => {
+
+      const isCompleted =
+        user?.completedCourses?.includes(course._id);
+
+      const progressData =
+        user?.courseProgress?.find(
+          p => p.course.toString() === course._id
+        );
+
+      const completedModules =
+        progressData?.completedModules || 0;
+
+      return (
+        <div
+          key={course._id}
+          className="course-card"
+          onClick={() => {
+            if (user) {
+              navigate(`/courses/${course._id}`);
+            } else {
+              setShowAuthModal(true);
+            }
+          }}
+        >
+
+          <h3>{course.courseName}</h3>
+
+          <div className="card-meta">
+
+            {isCompleted ? (
+              <span className="badge badge-green">
+                ✅ Завершено
+              </span>
+
+            ) : completedModules > 0 ? (
+
+              <span className="badge badge-yellow">
+                ⏳ В процесі
+              </span>
+
+            ) : (
+
+              <span className="badge badge-gray">
+                📚 Не розпочато
+              </span>
+
+            )}
+
+            {course.certificate && (
+              <span className="badge badge-blue">
+                🎓 Сертифікат
+              </span>
+            )}
+
+            {course.price === 0 ? (
+              <span className="badge badge-gray">
+                Безкоштовно
+              </span>
+            ) : (
+              <span className="badge badge-gray">
+                💰 {course.price} грн
+              </span>
+            )}
+
+          </div>
+
+          <div>{course.courseDesc}</div>
+
+          {course.modules > 0 && (
+            <>
+              <p
+                style={{
+                  fontSize: '0.85rem',
+                  color: '#888'
+                }}
+              >
+                Модулі:
+                {' '}
+                {completedModules}/{course.modules}
+              </p>
+
+              <div className="progress-bar">
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${progress(
+                      completedModules,
+                      course.modules
+                    )}%`
+                  }}
+                />
               </div>
+            </>
+          )}
 
-              {course.modules > 0 && (
-                <>
-                  <p style={{ fontSize: '0.85rem', color: '#888' }}>
-                    Модулі: {course.modulesdone}/{course.modules}
-                  </p>
-                  <div className="progress-bar">
-                    <div className="progress-fill"
-                      style={{ width: `${progress(course.modulesdone, course.modules)}%` }} />
-                  </div>
-                </>
-              )}
+          {course.siteUrl && (
+            <a
+              href={course.siteUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                fontSize: '0.8rem',
+                color: '#4f7ef8',
+                display: 'block',
+                marginTop: '0.75rem'
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              🔗 Перейти на курс
+            </a>
+          )}
 
-              {course.siteUrl && (
-                <a href={course.siteUrl} target="_blank" rel="noreferrer"
-                  style={{ fontSize: '0.8rem', color: '#4f7ef8', display: 'block', marginTop: '0.75rem' }}
-                  onClick={e => e.stopPropagation()}>
-                  🔗 Перейти на курс
-                </a>
-              )}
-
-		  {user && (
-              <div style={{ marginTop: '1rem', textAlign: 'right' }}>
-                <button className="btn-danger"
-                  onClick={e => handleDelete(e, course._id)}>
-                  Видалити
-                </button>
-              </div>
-		  )}
+          {user && (
+            <div
+              style={{
+                marginTop: '1rem',
+                textAlign: 'right'
+              }}
+            >
+              <button
+                className="btn-danger"
+                onClick={e =>
+                  handleDelete(e, course._id)
+                }
+              >
+                Видалити
+              </button>
             </div>
-          ))}
+          )}
+
         </div>
-      )}
-
-	  {showAuthModal && (
-  <div
-    className="modal-overlay"
-    onClick={() => setShowAuthModal(false)}
-  >
-    <div
-      className="auth-modal"
-      onClick={e => e.stopPropagation()}
-    >
-      <h2>Потрібна авторизація</h2>
-
-      <p>
-        Щоб переглядати деталі курсу,
-        увійдіть або створіть акаунт.
-      </p>
-
-      <div className="modal-actions">
-        <button
-          className="btn-primary"
-          onClick={() => navigate('/login')}
-        >
-          Увійти
-        </button>
-
-        <button
-          className="btn-secondary"
-          onClick={() => navigate('/register')}
-        >
-          Реєстрація
-        </button>
-      </div>
-
-      <button
-        className="modal-close"
-        onClick={() => setShowAuthModal(false)}
-      >
-        ✕
-      </button>
-    </div>
+      );
+    })}
   </div>
 )}
 

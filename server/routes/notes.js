@@ -1,9 +1,24 @@
 const router = require('express').Router();
 const Note = require('../models/Notes');
-const { authMiddleware } = require('./auth');
+const authMiddleware = require('../middleware/authMiddleware');
 
+
+router.get('/', authMiddleware, async (req, res) => {
+  try {
+    const notes = await Note.find({
+      authorId: req.user.id
+    }).sort({ createdAt: -1 });
+
+    res.json(notes);
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message
+    });
+  }
+});
 // GET нотатки до курсу
-router.get('/:courseId', async (req, res) => {
+router.get('/:courseId', authMiddleware, async (req, res) => {
   try {
     const notes = await Note.find({
       courseId: req.params.courseId,
@@ -14,6 +29,7 @@ router.get('/:courseId', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
 
 // POST нова нотатка
 router.post('/', authMiddleware, async (req, res) => {
