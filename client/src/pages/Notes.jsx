@@ -7,7 +7,7 @@ export default function Notes() {
 
   const [notes, setNotes] = useState([]);
   const [courses, setCourses] = useState([]);
-
+  const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
 
   const [form, setForm] = useState({
@@ -76,6 +76,11 @@ export default function Notes() {
     }
   };
 
+	  const filteredNotes = notes.filter(note =>
+  note.title?.toLowerCase().includes(search.toLowerCase()) ||
+  note.text?.toLowerCase().includes(search.toLowerCase()) ||
+  note.tags?.toLowerCase().includes(search.toLowerCase())
+);
   return (
     <div className="notes-page">
       <div className="notes-header">
@@ -97,6 +102,7 @@ export default function Notes() {
             required
           />
 
+
           <textarea
             name="text"
             placeholder="Текст нотатки"
@@ -105,6 +111,13 @@ export default function Notes() {
             required
           />
 
+          <input
+            type="text"
+            name="tags"
+            placeholder="Теги"
+            value={form.tags}
+            onChange={handleChange}
+          />
           <select
             name="courseId"
             value={form.courseId}
@@ -135,8 +148,15 @@ export default function Notes() {
         </form>
       )}
 
+	  <input
+	  	type="text"
+	  	placeholder="Пошук нотаток..."
+	  	value={search}
+	  	onChange={e => setSearch(e.target.value)}
+	  	className="search-input"
+	  />
       <div className="notes-grid">
-        {notes.map(note => (
+        {filteredNotes.map(note => (
           <div key={note._id} className="note-card">
             <h3>{note.title}</h3>
 

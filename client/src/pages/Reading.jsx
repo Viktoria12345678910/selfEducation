@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 const TYPES = ['book', 'article', 'paper', 'other'];
 const TYPE_LABELS = { book: '📖 Книга', article: '📰 Стаття', paper: '📄 Наукова праця', other: '🔖 Інше' };
 const TYPE_BADGES = { book: 'badge-blue', article: 'badge-green', paper: 'badge-yellow', other: 'badge-gray' };
-
 const EMPTY_FORM = { title: '', type: 'article', url: '', finished: false };
 
 export default function Reading() {
@@ -16,6 +15,7 @@ export default function Reading() {
   const [pages, setPages] = useState(1);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState('all'); // all | book | article | paper | other
+  const [search, setSearch] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
@@ -77,7 +77,9 @@ export default function Reading() {
     });
     fetchItems(page);
   };
-
+const filteredBooks = items.filter(book =>
+  book.title?.toLowerCase().includes(search.toLowerCase())
+);
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -144,8 +146,13 @@ export default function Reading() {
           </form>
         </div>
       )}
-
-      {/* СПИСОК */}
+<input
+  type="text"
+  placeholder="Пошук серед матеріалів..."
+  value={search}
+  onChange={e => setSearch(e.target.value)}
+  className="search-input"
+/>      {/* СПИСОК */}
       {error && <p className="error">{error}</p>}
       {loading ? (
         <p style={{ color: '#aaa' }}>Завантаження...</p>
@@ -153,7 +160,7 @@ export default function Reading() {
         <p style={{ color: '#aaa' }}>Нічого немає. Додай перший матеріал!</p>
       ) : (
         <div className="cards-grid">
-          {items.map(item => (
+          {filteredBooks.map(item => (
             <div key={item._id} className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <h3 style={{ fontSize: '1rem', flex: 1, marginRight: '1rem' }}>{item.title}</h3>

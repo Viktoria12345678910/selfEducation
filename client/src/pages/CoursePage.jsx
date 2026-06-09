@@ -6,7 +6,7 @@ import { API_URL } from '../config';
 
 export default function CoursePage() {
   const { id } = useParams();
-  const { authFetch, user, refreshUser } = useAuth();
+  const { authFetch, user } = useAuth();
   const navigate = useNavigate();
 
   const [course, setCourse] = useState(null);
@@ -18,7 +18,7 @@ export default function CoursePage() {
 
   const fetchCourse = async () => {
     try {
-      const res = await fetch(`/api/courses/${id}`);
+      const res = await fetch(`${API_URL}/api/courses/${id}`);
       if (!res.ok) return navigate('/courses');
       setCourse(await res.json());
     } catch {
@@ -37,11 +37,15 @@ export default function CoursePage() {
     }
   };
 
-  useEffect(() => {
-    fetchCourse();
-    fetchNotes();
-  }, [id]);
+useEffect(() => {
+  fetchCourse();
 
+  if (user) {
+    fetchNotes();
+  } else {
+    setLoading(false);
+  }
+}, [id, user]);
   const handleSubmit = async e => {
     e.preventDefault();
     const res = await authFetch('/api/notes', {
@@ -59,24 +63,24 @@ export default function CoursePage() {
       setShowForm(false);
       fetchNotes();
     }
-    refreshUser();
+  //  refreshUser();
   };
 
   const handleDelete = async (noteId) => {
     if (!window.confirm('Видалити нотатку?')) return;
     await authFetch(`/api/notes/${noteId}`, { method: 'DELETE' });
     fetchNotes();
-    refreshUser();
+   // refreshUser();
   };
 
 const handleToggleComplete = async () => {
   await authFetch(`/api/courses/${id}/complete`, {
     method: 'POST'
   });
-  refreshUser();
+ // refreshUser();
 };
 
-  if (loading) return <p className="loading">Завантаження...</p>;
+  if (loading && user) return <p className="loading">Завантаження...</p>;
   if (!course) return null;
   const isCompleted = user?.completedCourses?.includes(course._id);
 

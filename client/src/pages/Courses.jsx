@@ -20,6 +20,8 @@ export default function Courses() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [search, setSearch] = useState('');
+
 // eslint-disable-next-line
   const [showAuthModal, setShowAuthModal] = useState(false);
 
@@ -68,6 +70,9 @@ export default function Courses() {
   const progress = (done, total) =>
     total > 0 ? Math.round((done / total) * 100) : 0;
 
+      const filteredCourses = courses.filter(course => 
+	      course.courseName?.toLowerCase().includes(search.toLowerCase()) ||
+     course.courseDesc?.toLowerCase().includes(search.toLowerCase()) );
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -111,6 +116,13 @@ export default function Courses() {
 	
 
 {/* СПИСОК КУРСІВ */}
+	  <input
+  type="text"
+  placeholder="Пошук курсів..."
+  value={search}
+  onChange={e => setSearch(e.target.value)}
+  className="search-input"
+/>
 {error && <p className="error">{error}</p>}
 
 {loading ? (
@@ -123,8 +135,7 @@ export default function Courses() {
   </p>
 ) : (
   <div className="cards-grid">
-    {courses.map(course => {
-
+    {filteredCourses.map(course => {
       const isCompleted =
         user?.completedCourses?.includes(course._id);
 
@@ -135,19 +146,17 @@ export default function Courses() {
 
       const completedModules =
         progressData?.completedModules || 0;
-
       return (
         <div
           key={course._id}
           className="course-card"
-          onClick={() => {
-            if (user) {
-              navigate(`/courses/${course._id}`);
-            } else {
-              setShowAuthModal(true);
-            }
-          }}
-        >
+onClick={() => {
+  if (user) {
+    navigate('/courses/' + course._id);
+  } else {
+    setShowAuthModal(true);
+  }
+}}        >
 
           <h3>{course.courseName}</h3>
 
