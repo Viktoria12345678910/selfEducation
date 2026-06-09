@@ -79,7 +79,7 @@ export default function Notes() {
 	  const filteredNotes = notes.filter(note =>
   note.title?.toLowerCase().includes(search.toLowerCase()) ||
   note.text?.toLowerCase().includes(search.toLowerCase()) ||
-  note.tags?.toLowerCase().includes(search.toLowerCase())
+  note.tags?.join(' ').toLowerCase().includes(search.toLowerCase())
 );
   return (
     <div className="notes-page">
